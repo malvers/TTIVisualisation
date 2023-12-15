@@ -1,3 +1,5 @@
+package TTIVisualiser;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -11,13 +13,13 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Visualizer extends JButton {
+public class TTIVisualizer extends JButton {
 
     ArrayList<BufferedImage> theImages = new ArrayList<>();
     private int imgToDrawIndex = 0;
     private BufferedImage imgToDraw = null;
 
-    public Visualizer() {
+    public TTIVisualizer() {
 
         Timer timer = new Timer();
 
@@ -87,7 +89,7 @@ public class Visualizer extends JButton {
             GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 
             JFrame f = new JFrame();
-            Visualizer v = new Visualizer();
+            TTIVisualizer v = new TTIVisualizer();
             f.add(v);
             f.setUndecorated(true);
             device.setFullScreenWindow(f);
