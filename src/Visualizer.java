@@ -46,7 +46,6 @@ public class Visualizer extends JButton {
             System.out.println("fileStr: " + fileStr);
 
             if (!fileStr.endsWith("jpg") && !fileStr.endsWith("png")  ) {
-                System.out.println("... no .jpg or .png");
                 continue;
             }
 
@@ -84,10 +83,13 @@ public class Visualizer extends JButton {
 
         SwingUtilities.invokeLater(() -> {
 
+            GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
             JFrame f = new JFrame();
             Visualizer v = new Visualizer();
             f.add(v);
-            f.setSize(1200, 800);
+            f.setUndecorated(true);
+            device.setFullScreenWindow(f);
             f.setLocation(0, 0);
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setVisible(true);
