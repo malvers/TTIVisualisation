@@ -37,7 +37,7 @@ public class TTIVisualizer extends JButton {
                     repaint();
                 }
             }
-        }, 0, 1000);
+        }, 0, 5000);
 
         String dirStr = "/Users/malvers/Library/Mobile Documents/com~apple~CloudDocs/AI/images";
         dirStr = "G:\\Andere Computer\\My MacBook Pro\\AI\\TTIimages";
@@ -48,7 +48,7 @@ public class TTIVisualizer extends JButton {
 
             System.out.println("fileStr: " + fileStr);
 
-            if (!fileStr.endsWith("jpg") && !fileStr.endsWith("png")  ) {
+            if (!fileStr.endsWith("jpg") && !fileStr.endsWith("png")) {
                 continue;
             }
 
@@ -56,7 +56,7 @@ public class TTIVisualizer extends JButton {
             try {
                 File theFile = new File(dirStr + "/" + fileStr);
 
-                System.out.println("theFile: " + theFile);
+//                System.out.println("theFile: " + theFile);
 
                 img = ImageIO.read(theFile);
             } catch (IOException e) {
@@ -72,6 +72,8 @@ public class TTIVisualizer extends JButton {
 
         Graphics2D g2d = (Graphics2D) g;
 
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
         g2d.drawImage(imgToDraw, 0, 0, imgToDraw.getWidth(), imgToDraw.getHeight(), this);
     }
 
