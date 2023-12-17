@@ -22,6 +22,8 @@ public class TTIVisualizer extends JButton {
     private BufferedImage imgToDraw = null;
     private boolean drawHelp = false;
     private int imgCount = 0;
+    private int delay = 1000;
+    private Timer timer;
 
     public TTIVisualizer() {
 
@@ -128,7 +130,10 @@ public class TTIVisualizer extends JButton {
 
     private void createTimer() {
 
-        Timer timer = new Timer();
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -143,7 +148,7 @@ public class TTIVisualizer extends JButton {
                     repaint();
                 }
             }
-        }, 0, 5000);
+        }, 0, delay);
     }
 
     /// handle mouse events ////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,8 +178,18 @@ public class TTIVisualizer extends JButton {
             case KeyEvent.VK_SPACE:
                 break;
             case KeyEvent.VK_UP:
+                delay += 1000;
+                if (delay > 100000) {
+                    delay = 100000;
+                }
+                createTimer();
                 break;
             case KeyEvent.VK_DOWN:
+                delay -= 1000;
+                if (delay < 1000) {
+                    delay = 1000;
+                }
+                createTimer();
                 break;
             case KeyEvent.VK_ENTER:
                 break;
