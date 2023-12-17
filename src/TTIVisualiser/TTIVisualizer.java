@@ -21,6 +21,7 @@ public class TTIVisualizer extends JButton {
     private int imgToDrawIndex = 0;
     private BufferedImage imgToDraw = null;
     private boolean drawHelp = false;
+    private int imgCount = 0;
 
     public TTIVisualizer() {
 
@@ -52,6 +53,10 @@ public class TTIVisualizer extends JButton {
 
             if (!fileStr.endsWith("jpg") && !fileStr.endsWith("png")) {
                 continue;
+            }
+
+            if(imgCount++ > 2 ) {
+                break;
             }
 
             BufferedImage img;
@@ -194,6 +199,7 @@ public class TTIVisualizer extends JButton {
             f.setLocation(0, 0);
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setVisible(true);
+            f.requestFocus();
         });
     }
 }
