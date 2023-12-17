@@ -148,7 +148,7 @@ public class TTIVisualizer extends JButton {
                 continue;
             }
 
-            if (imgCount++ > 3) {
+            if (debugMode && imgCount++ > 3) {
                 break;
             }
 
