@@ -3,10 +3,7 @@ package TTIVisualiser;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,14 +14,18 @@ import java.util.stream.Stream;
 
 public class TTIVisualizer extends JButton {
 
+    private Timer fader;
+    private float alpha = 0.0f;
+    private Timer timer;
     ArrayList<BufferedImage> theImages = new ArrayList<>();
     private int imgToDrawIndex = 0;
     private BufferedImage imgToDraw = null;
     private boolean drawHelp = false;
     private int imgCount = 0;
-    private int period = 1000;
-    private Timer timer;
+    private int period = 4000;
     private boolean debugMode = true;
+    private BufferedImage nextImgToDraw;
+    private boolean fadingDone = true;
 
     public TTIVisualizer() {
 
@@ -40,14 +41,17 @@ public class TTIVisualizer extends JButton {
         loadImages();
 
         createTimer();
+
+//        createFader();
     }
 
     /// drawing functions //////////////////////////////////////////////////////////////////////////////////////////////+
-
     @Override
     public void paint(Graphics g) {
 
         Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (drawHelp) {
             drawHelpPage(g2d);
@@ -62,9 +66,19 @@ public class TTIVisualizer extends JButton {
     }
 
     private void drawImage(Graphics2D g2d) {
+
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
+
+        Composite originalComposite = g2d.getComposite();
+
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f - alpha));
         g2d.drawImage(imgToDraw, 0, 0, getWidth(), getHeight(), this);
+
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        g2d.drawImage(nextImgToDraw, 0, 0, getWidth(), getHeight(), this);
+
+        g2d.setComposite(originalComposite);
     }
 
     private void drawDebug(Graphics2D g2d) {
@@ -106,6 +120,10 @@ public class TTIVisualizer extends JButton {
 
     /// helper function ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    private boolean isDebug() {
+        return debugMode;
+    }
+
     public Set<String> listFilesUsingJavaIO(String dir) {
         return Stream.of(Objects.requireNonNull(new File(dir).listFiles()))
                 .filter(file -> !file.isDirectory())
@@ -131,7 +149,7 @@ public class TTIVisualizer extends JButton {
                 continue;
             }
 
-            if (imgCount++ > 2) {
+            if (imgCount++ > 3) {
                 break;
             }
 
@@ -148,6 +166,7 @@ public class TTIVisualizer extends JButton {
             theImages.add(img);
         }
         imgToDraw = theImages.get(imgToDrawIndex);
+        nextImgToDraw = theImages.get(imgToDrawIndex + 1);
     }
 
     private void createTimer() {
@@ -160,11 +179,18 @@ public class TTIVisualizer extends JButton {
             @Override
             public void run() {
 
-                if (theImages.size() > 0) {
+                if (theImages.size() > 0 && fadingDone) {
+
                     imgToDraw = theImages.get(imgToDrawIndex);
+                    nextImgToDraw = theImages.get(imgToDrawIndex + 1);
+
                     System.out.println("index: " + imgToDrawIndex);
+
+                    createFader();
+
                     imgToDrawIndex++;
-                    if (imgToDrawIndex > theImages.size() - 1) {
+
+                    if (imgToDrawIndex > theImages.size() - 2) {
                         imgToDrawIndex = 0;
                     }
                     repaint();
@@ -173,8 +199,30 @@ public class TTIVisualizer extends JButton {
         }, 0, period);
     }
 
-    /// handle mouse events ////////////////////////////////////////////////////////////////////////////////////////////
+    private void createFader() {
 
+        fadingDone = false;
+        if (fader != null) {
+            fader.cancel();
+        }
+        fader = new Timer();
+        fader.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                alpha += 0.02f;
+
+                if (alpha >= 1.0f) {
+                    alpha = 1.0f;
+                    fader.cancel();
+                    fadingDone = true;
+                }
+                repaint();
+            }
+        }, 0, 100);
+    }
+
+    /// handle mouse events ////////////////////////////////////////////////////////////////////////////////////////////
     private void handleMouseEvents() {
         addMouseListener(new MouseAdapter() {
             @Override
@@ -190,12 +238,13 @@ public class TTIVisualizer extends JButton {
     }
 
     /// handle key events //////////////////////////////////////////////////////////////////////////////////////////////
-
     private void handleKeyEvents(KeyEvent e) {
 
         switch (e.getKeyCode()) {
 
             case KeyEvent.VK_ESCAPE:
+                break;
+            case KeyEvent.VK_ENTER:
                 break;
             case KeyEvent.VK_SPACE:
                 break;
@@ -213,11 +262,13 @@ public class TTIVisualizer extends JButton {
                 }
                 createTimer();
                 break;
-            case KeyEvent.VK_ENTER:
-                break;
             case KeyEvent.VK_LEFT:
                 break;
             case KeyEvent.VK_RIGHT:
+                imgToDraw = theImages.get(imgToDrawIndex);
+                nextImgToDraw = theImages.get(imgToDrawIndex + 1);
+                createFader();
+                imgToDrawIndex++;
                 break;
 
             /// number keys ////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +277,7 @@ public class TTIVisualizer extends JButton {
 
             /// letter keys ////////////////////////////////////////////////////////////////////////////////////////////
             case KeyEvent.VK_D:
-                debugMode =!debugMode;
+                debugMode = !debugMode;
                 break;
             case KeyEvent.VK_E:
                 break;
@@ -247,19 +298,24 @@ public class TTIVisualizer extends JButton {
     }
 
     /// finally the main function //////////////////////////////////////////////////////////////////////////////////////
-
     public static void main(String[] args) {
 
         SwingUtilities.invokeLater(() -> {
 
-            GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-
             JFrame f = new JFrame();
+            f.setLocation(0, 0);
+
             TTIVisualizer v = new TTIVisualizer();
             f.add(v);
-            f.setUndecorated(true);
-            device.setFullScreenWindow(f);
-            f.setLocation(0, 0);
+
+            if (!v.isDebug()) {
+                f.setUndecorated(true);
+                GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+                device.setFullScreenWindow(f);
+            } else {
+                f.setSize(1200, 800);
+            }
+
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setVisible(true);
             v.requestFocus();
