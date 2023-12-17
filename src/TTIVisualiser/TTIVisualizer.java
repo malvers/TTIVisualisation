@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,9 +34,25 @@ public class TTIVisualizer extends JButton {
             }
         });
 
+        handleMouseEvents();
+
         loadImages();
 
         createTimer();
+    }
+
+    private void handleMouseEvents() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                requestFocus();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                requestFocus();
+            }
+        });
     }
 
     private void loadImages() {
@@ -199,7 +217,7 @@ public class TTIVisualizer extends JButton {
             f.setLocation(0, 0);
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setVisible(true);
-            f.requestFocus();
+            v.requestFocus();
         });
     }
 }
