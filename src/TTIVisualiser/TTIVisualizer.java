@@ -10,10 +10,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,18 +39,54 @@ public class TTIVisualizer extends JButton {
         createTimer();
     }
 
-    private void handleMouseEvents() {
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                requestFocus();
-            }
+    /// drawing functions //////////////////////////////////////////////////////////////////////////////////////////////+
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                requestFocus();
-            }
-        });
+    @Override
+    public void paint(Graphics g) {
+
+        Graphics2D g2d = (Graphics2D) g;
+
+        if (drawHelp) {
+            drawHelpPage(g2d);
+            return;
+        }
+
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+        g2d.drawImage(imgToDraw, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    private void drawHelpPage(Graphics2D g2d) {
+
+        g2d.setColor(Color.lightGray);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+
+        int fs = 26;
+        Font font = new Font("Arial", Font.PLAIN, fs);
+        g2d.setFont(font);
+        g2d.setColor(Color.DARK_GRAY);
+
+        int xPos = 20;
+        int dy = (int) (fs * 1.5);
+        int yPos = dy;
+        int tab = 350;
+
+        g2d.drawString("H", xPos, yPos);
+        g2d.drawString("Show this help page", xPos + tab, yPos);
+        yPos += dy;
+
+        g2d.drawString("Control W", xPos, yPos);
+        g2d.drawString("Quit the program", xPos + tab, yPos);
+        yPos += dy;
+    }
+
+    /// helper function ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Set<String> listFilesUsingJavaIO(String dir) {
+        return Stream.of(Objects.requireNonNull(new File(dir).listFiles()))
+                .filter(file -> !file.isDirectory())
+                .map(File::getName)
+                .collect(Collectors.toSet());
     }
 
     private void loadImages() {
@@ -73,7 +107,7 @@ public class TTIVisualizer extends JButton {
                 continue;
             }
 
-            if(imgCount++ > 2 ) {
+            if (imgCount++ > 2) {
                 break;
             }
 
@@ -112,57 +146,24 @@ public class TTIVisualizer extends JButton {
         }, 0, 5000);
     }
 
-    @Override
-    public void paint(Graphics g) {
+    /// handle mouse events ////////////////////////////////////////////////////////////////////////////////////////////
 
-        Graphics2D g2d = (Graphics2D) g;
+    private void handleMouseEvents() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                requestFocus();
+            }
 
-        if (drawHelp) {
-            drawHelpPage(g2d);
-            return;
-        }
-
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(0, 0, getWidth(), getHeight());
-        g2d.drawImage(imgToDraw, 0, 0, getWidth(), getHeight(), this);
-    }
-
-    private void drawHelpPage(Graphics2D g2d) {
-
-        g2d.setColor(Color.lightGray);
-        g2d.fillRect(0, 0, getWidth(), getHeight());
-
-        int fs = 26;
-        Font font = new Font("Arial", Font.PLAIN, fs);
-        g2d.setFont(font);
-        g2d.setColor(Color.DARK_GRAY);
-
-        int xPos = 20;
-        int dy = (int) (fs * 1.5);
-        int yPos = dy;
-        int tab = 350;
-
-        g2d.drawString("H", xPos, yPos);
-        g2d.drawString("Show this help page", xPos + tab, yPos);
-        yPos += dy;
-
-        g2d.drawString("I", xPos, yPos);
-        g2d.drawString("Init actual task", xPos + tab, yPos);
-        yPos += dy;
-
-        g2d.drawString("Cmd W", xPos, yPos);
-        g2d.drawString("Quit the program", xPos + tab, yPos);
-        yPos += dy;
-    }
-
-    public Set<String> listFilesUsingJavaIO(String dir) {
-        return Stream.of(new File(dir).listFiles())
-                .filter(file -> !file.isDirectory())
-                .map(File::getName)
-                .collect(Collectors.toSet());
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                requestFocus();
+            }
+        });
     }
 
     /// handle key events //////////////////////////////////////////////////////////////////////////////////////////////
+
     private void handleKeyEvents(KeyEvent e) {
 
         switch (e.getKeyCode()) {
@@ -202,6 +203,8 @@ public class TTIVisualizer extends JButton {
         }
         repaint();
     }
+
+    /// finally the main function //////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(String[] args) {
 
