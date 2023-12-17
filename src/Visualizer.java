@@ -38,6 +38,7 @@ public class Visualizer extends JButton {
         }, 0, 1000);
 
         String dirStr = "/Users/malvers/Library/Mobile Documents/com~apple~CloudDocs/AI/images";
+        dirStr = "G:\\Andere Computer\\My MacBook Pro\\AI\\TTIimages";
 
         Set<String> files = listFilesUsingJavaIO(dirStr);
 
