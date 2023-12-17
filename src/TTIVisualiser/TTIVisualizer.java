@@ -39,14 +39,19 @@ public class TTIVisualizer extends JButton {
             }
         }, 0, 5000);
 
-        String dirStr = "/Users/malvers/Library/Mobile Documents/com~apple~CloudDocs/AI/images";
-        dirStr = "G:\\Andere Computer\\My MacBook Pro\\AI\\TTIimages";
+        String dirStr = System.getProperty("os.name").toLowerCase();
+
+        System.out.println("dirStr: " + dirStr);
+
+        if (dirStr.contains("win")) {
+            dirStr = "G:\\Andere Computer\\My MacBook Pro\\AI\\TTIimages";
+        } else {
+            dirStr = "/Users/malvers/Library/Mobile Documents/com~apple~CloudDocs/AI/TTIimages";
+        }
 
         Set<String> files = listFilesUsingJavaIO(dirStr);
 
         for (String fileStr : files) {
-
-            System.out.println("fileStr: " + fileStr);
 
             if (!fileStr.endsWith("jpg") && !fileStr.endsWith("png")) {
                 continue;
@@ -56,7 +61,7 @@ public class TTIVisualizer extends JButton {
             try {
                 File theFile = new File(dirStr + "/" + fileStr);
 
-//                System.out.println("theFile: " + theFile);
+                System.out.println("theFile: " + theFile);
 
                 img = ImageIO.read(theFile);
             } catch (IOException e) {
@@ -74,7 +79,7 @@ public class TTIVisualizer extends JButton {
 
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
-        g2d.drawImage(imgToDraw, 0, 0, imgToDraw.getWidth(), imgToDraw.getHeight(), this);
+        g2d.drawImage(imgToDraw, 0, 0, getWidth(), getHeight(), this);
     }
 
     public Set<String> listFilesUsingJavaIO(String dir) {
