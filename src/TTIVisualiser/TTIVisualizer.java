@@ -22,8 +22,9 @@ public class TTIVisualizer extends JButton {
     private BufferedImage imgToDraw = null;
     private boolean drawHelp = false;
     private int imgCount = 0;
-    private int delay = 1000;
+    private int period = 1000;
     private Timer timer;
+    private boolean debugMode = true;
 
     public TTIVisualizer() {
 
@@ -53,9 +54,22 @@ public class TTIVisualizer extends JButton {
             return;
         }
 
+        drawImage(g2d);
+
+        if (debugMode) {
+            drawDebug(g2d);
+        }
+    }
+
+    private void drawImage(Graphics2D g2d) {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
         g2d.drawImage(imgToDraw, 0, 0, getWidth(), getHeight(), this);
+    }
+
+    private void drawDebug(Graphics2D g2d) {
+        g2d.setColor(Color.GRAY);
+        g2d.drawString("period: " + period, 10, 30);
     }
 
     private void drawHelpPage(Graphics2D g2d) {
@@ -148,7 +162,7 @@ public class TTIVisualizer extends JButton {
                     repaint();
                 }
             }
-        }, 0, delay);
+        }, 0, period);
     }
 
     /// handle mouse events ////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,16 +192,16 @@ public class TTIVisualizer extends JButton {
             case KeyEvent.VK_SPACE:
                 break;
             case KeyEvent.VK_UP:
-                delay += 1000;
-                if (delay > 100000) {
-                    delay = 100000;
+                period += 1000;
+                if (period > 100000) {
+                    period = 100000;
                 }
                 createTimer();
                 break;
             case KeyEvent.VK_DOWN:
-                delay -= 1000;
-                if (delay < 1000) {
-                    delay = 1000;
+                period -= 1000;
+                if (period < 1000) {
+                    period = 1000;
                 }
                 createTimer();
                 break;
@@ -204,6 +218,7 @@ public class TTIVisualizer extends JButton {
 
             /// letter keys ////////////////////////////////////////////////////////////////////////////////////////////
             case KeyEvent.VK_D:
+                debugMode =!debugMode;
                 break;
             case KeyEvent.VK_E:
                 break;
