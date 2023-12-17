@@ -70,15 +70,15 @@ public class TTIVisualizer extends JButton {
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
-        Composite originalComposite = g2d.getComposite();
+//        Composite originalComposite = g2d.getComposite();
 
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f - alpha));
+//        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f - alpha));
         g2d.drawImage(imgToDraw, 0, 0, getWidth(), getHeight(), this);
 
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+//        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         g2d.drawImage(nextImgToDraw, 0, 0, getWidth(), getHeight(), this);
 
-        g2d.setComposite(originalComposite);
+//        g2d.setComposite(originalComposite);
     }
 
     private void drawDebug(Graphics2D g2d) {
@@ -119,7 +119,6 @@ public class TTIVisualizer extends JButton {
     }
 
     /// helper function ////////////////////////////////////////////////////////////////////////////////////////////////
-
     private boolean isDebug() {
         return debugMode;
     }
@@ -186,11 +185,11 @@ public class TTIVisualizer extends JButton {
 
                     System.out.println("index: " + imgToDrawIndex);
 
-                    createFader();
+//                    createFader();
 
                     imgToDrawIndex++;
 
-                    if (imgToDrawIndex > theImages.size() - 2) {
+                    if (imgToDrawIndex > theImages.size() - 1) {
                         imgToDrawIndex = 0;
                     }
                     repaint();
