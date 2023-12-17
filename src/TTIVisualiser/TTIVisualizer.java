@@ -87,11 +87,19 @@ public class TTIVisualizer extends JButton {
         int yPos = dy;
         int tab = 350;
 
+        g2d.drawString("D", xPos, yPos);
+        g2d.drawString("Toggle debug mode", xPos + tab, yPos);
+        yPos += dy;
+
         g2d.drawString("H", xPos, yPos);
         g2d.drawString("Show this help page", xPos + tab, yPos);
         yPos += dy;
 
-        g2d.drawString("Control W", xPos, yPos);
+        g2d.drawString("L", xPos, yPos);
+        g2d.drawString("Set interval to 5 min", xPos + tab, yPos);
+        yPos += dy;
+
+        g2d.drawString("W", xPos, yPos);
         g2d.drawString("Quit the program", xPos + tab, yPos);
         yPos += dy;
     }
@@ -193,13 +201,13 @@ public class TTIVisualizer extends JButton {
                 break;
             case KeyEvent.VK_UP:
                 period += 1000;
-                if (period > 100000) {
-                    period = 100000;
+                if (period > 300000) { /// 5 min
+                    period = 300000;
                 }
                 createTimer();
                 break;
             case KeyEvent.VK_DOWN:
-                period -= 1000;
+                period -= 1000; /// 1 second
                 if (period < 1000) {
                     period = 1000;
                 }
@@ -224,6 +232,10 @@ public class TTIVisualizer extends JButton {
                 break;
             case KeyEvent.VK_H:
                 drawHelp = !drawHelp;
+                break;
+            case KeyEvent.VK_L:
+                period = 300000; /// 5 min
+                createTimer();
                 break;
             case KeyEvent.VK_M:
                 break;
