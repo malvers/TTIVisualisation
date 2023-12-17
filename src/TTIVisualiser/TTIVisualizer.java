@@ -22,8 +22,8 @@ public class TTIVisualizer extends JButton {
     private BufferedImage imgToDraw = null;
     private boolean drawHelp = false;
     private int imgCount = 0;
-    private int period = 4000;
-    private boolean debugMode = true;
+    private int period = 10000;
+    private boolean debugMode = false;
     private BufferedImage nextImgToDraw;
     private boolean fadingDone = true;
 
@@ -60,9 +60,9 @@ public class TTIVisualizer extends JButton {
 
         drawImage(g2d);
 
-        if (debugMode) {
+//        if (debugMode) {
             drawDebug(g2d);
-        }
+//        }
     }
 
     private void drawImage(Graphics2D g2d) {
