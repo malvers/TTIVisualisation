@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 public class TTIVisualizer extends JButton {
 
+    private JFrame frame;
     private Timer fader;
     private float alpha = 0.0f;
     private Timer timer;
@@ -23,12 +24,16 @@ public class TTIVisualizer extends JButton {
     private boolean drawHelp = false;
     private int imgCount = 0;
     private int period = 2000;
-    private boolean developMode = true;
-    private BufferedImage nextImgToDraw;
+    private final boolean developMode = true;
+    //    private BufferedImage nextImgToDraw;
     private boolean fadingDone = true;
     private boolean debugMode = true;
+    private boolean fullScreenMode = false;
 
-    public TTIVisualizer() {
+    public TTIVisualizer(JFrame f) {
+
+        frame = f;
+        toggleFullscreen();
 
         addKeyListener(new KeyAdapter() {
             @Override
@@ -45,6 +50,33 @@ public class TTIVisualizer extends JButton {
 
         /// TODO: implement
 //        createFader();
+    }
+
+    private void toggleFullscreen() {
+
+        GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+
+        if (fullScreenMode) {
+            System.out.println("fullscreen");
+            frame.dispose();
+            frame.setUndecorated(true);
+            device.setFullScreenWindow(frame);
+        } else {
+            System.out.println("no fullscreen");
+            frame.dispose();
+            frame.setUndecorated(false);
+
+            /// TODO: calculate ratio good
+            double ratio = 1.631;
+            if (imgToDraw != null) {
+                ratio = imgToDraw.getHeight() / imgToDraw.getWidth();
+            }
+            frame.setSize((int) (600 / ratio), 600);
+            frame.setLocation(0, 0);
+            device.setFullScreenWindow(null);
+        }
+
+        frame.setVisible(true);
     }
 
     /// drawing functions //////////////////////////////////////////////////////////////////////////////////////////////+
@@ -85,7 +117,7 @@ public class TTIVisualizer extends JButton {
 
     private void drawDebug(Graphics2D g2d) {
         g2d.setColor(Color.GRAY);
-        String str = "period [s]: " + (period/1000) + " screen width: " + getWidth() + " screen height: " + getHeight();
+        String str = "period [s]: " + (period / 1000) + " screen width: " + getWidth() + " screen height: " + getHeight();
         g2d.drawString(str, 10, 30);
     }
 
@@ -118,7 +150,7 @@ public class TTIVisualizer extends JButton {
 
         g2d.drawString("W", xPos, yPos);
         g2d.drawString("Quit the program", xPos + tab, yPos);
-        yPos += dy;
+//        yPos += dy;
     }
 
     /// helper function ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,6 +303,9 @@ public class TTIVisualizer extends JButton {
                 //nextImgToDraw = theImages.get(imgToDrawIndex + 1);
                 createFader();
                 imgToDrawIndex++;
+                if (imgToDrawIndex > theImages.size() - 1) {
+                    imgToDrawIndex = 0;
+                }
                 break;
 
             /// number keys ////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +316,9 @@ public class TTIVisualizer extends JButton {
             case KeyEvent.VK_D:
                 debugMode = !debugMode;
                 break;
-            case KeyEvent.VK_E:
+            case KeyEvent.VK_F:
+                fullScreenMode = !fullScreenMode;
+                toggleFullscreen();
                 break;
             case KeyEvent.VK_H:
                 drawHelp = !drawHelp;
@@ -307,16 +344,8 @@ public class TTIVisualizer extends JButton {
             JFrame f = new JFrame();
             f.setLocation(0, 0);
 
-            TTIVisualizer v = new TTIVisualizer();
+            TTIVisualizer v = new TTIVisualizer(f);
             f.add(v);
-
-            if (!v.isDevelopMode()) {
-                f.setUndecorated(true);
-                GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-                device.setFullScreenWindow(f);
-            } else {
-                f.setSize(1200, 800);
-            }
 
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.setVisible(true);
