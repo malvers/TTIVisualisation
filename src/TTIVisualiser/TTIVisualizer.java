@@ -22,10 +22,11 @@ public class TTIVisualizer extends JButton {
     private BufferedImage imgToDraw = null;
     private boolean drawHelp = false;
     private int imgCount = 0;
-    private int period = 10000;
-    private boolean debugMode = false;
+    private int period = 2000;
+    private boolean developMode = true;
     private BufferedImage nextImgToDraw;
     private boolean fadingDone = true;
+    private boolean debugMode = true;
 
     public TTIVisualizer() {
 
@@ -42,6 +43,7 @@ public class TTIVisualizer extends JButton {
 
         createTimer();
 
+        /// TODO: implement
 //        createFader();
     }
 
@@ -60,9 +62,9 @@ public class TTIVisualizer extends JButton {
 
         drawImage(g2d);
 
-//        if (debugMode) {
+        if (debugMode) {
             drawDebug(g2d);
-//        }
+        }
     }
 
     private void drawImage(Graphics2D g2d) {
@@ -76,14 +78,15 @@ public class TTIVisualizer extends JButton {
         g2d.drawImage(imgToDraw, 0, 0, getWidth(), getHeight(), this);
 
 //        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-        g2d.drawImage(nextImgToDraw, 0, 0, getWidth(), getHeight(), this);
+//        g2d.drawImage(nextImgToDraw, 0, 0, getWidth(), getHeight(), this);
 
 //        g2d.setComposite(originalComposite);
     }
 
     private void drawDebug(Graphics2D g2d) {
         g2d.setColor(Color.GRAY);
-        g2d.drawString("period: " + period, 10, 30);
+        String str = "period: " + period + " screen width: " + getWidth() + " screen height: " + getHeight();
+        g2d.drawString(str, 10, 30);
     }
 
     private void drawHelpPage(Graphics2D g2d) {
@@ -119,8 +122,8 @@ public class TTIVisualizer extends JButton {
     }
 
     /// helper function ////////////////////////////////////////////////////////////////////////////////////////////////
-    private boolean isDebug() {
-        return debugMode;
+    private boolean isDevelopMode() {
+        return developMode;
     }
 
     public Set<String> listFilesUsingJavaIO(String dir) {
@@ -148,7 +151,7 @@ public class TTIVisualizer extends JButton {
                 continue;
             }
 
-            if (debugMode && imgCount++ > 3) {
+            if (developMode && imgCount++ > 3) {
                 break;
             }
 
@@ -165,7 +168,7 @@ public class TTIVisualizer extends JButton {
             theImages.add(img);
         }
         imgToDraw = theImages.get(imgToDrawIndex);
-        nextImgToDraw = theImages.get(imgToDrawIndex + 1);
+//        nextImgToDraw = theImages.get(imgToDrawIndex + 1);
     }
 
     private void createTimer() {
@@ -181,7 +184,7 @@ public class TTIVisualizer extends JButton {
                 if (theImages.size() > 0 && fadingDone) {
 
                     imgToDraw = theImages.get(imgToDrawIndex);
-                    nextImgToDraw = theImages.get(imgToDrawIndex + 1);
+//                    nextImgToDraw = theImages.get(imgToDrawIndex + 1);
 
                     System.out.println("index: " + imgToDrawIndex);
 
@@ -265,7 +268,7 @@ public class TTIVisualizer extends JButton {
                 break;
             case KeyEvent.VK_RIGHT:
                 imgToDraw = theImages.get(imgToDrawIndex);
-                nextImgToDraw = theImages.get(imgToDrawIndex + 1);
+                //nextImgToDraw = theImages.get(imgToDrawIndex + 1);
                 createFader();
                 imgToDrawIndex++;
                 break;
@@ -307,7 +310,7 @@ public class TTIVisualizer extends JButton {
             TTIVisualizer v = new TTIVisualizer();
             f.add(v);
 
-            if (!v.isDebug()) {
+            if (!v.isDevelopMode()) {
                 f.setUndecorated(true);
                 GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
                 device.setFullScreenWindow(f);
