@@ -85,7 +85,7 @@ public class TTIVisualizer extends JButton {
 
     private void drawDebug(Graphics2D g2d) {
         g2d.setColor(Color.GRAY);
-        String str = "period: " + period + " screen width: " + getWidth() + " screen height: " + getHeight();
+        String str = "period [s]: " + (period/1000) + " screen width: " + getWidth() + " screen height: " + getHeight();
         g2d.drawString(str, 10, 30);
     }
 
