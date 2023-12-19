@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class TTIVisualizer extends JButton {
 
-    private JFrame frame;
+    private final JFrame frame;
     private Timer fader;
     private float alpha = 0.0f;
     private Timer timer;
@@ -24,11 +24,10 @@ public class TTIVisualizer extends JButton {
     private boolean drawHelp = false;
     private int imgCount = 0;
     private int period = 10000;
-    private final boolean developMode = true;
-    //    private BufferedImage nextImgToDraw;
     private boolean fadingDone = true;
     private boolean debugMode = true;
     private boolean fullScreenMode = false;
+    private boolean developMode = true;
 
     public TTIVisualizer(JFrame f) {
 
@@ -66,9 +65,9 @@ public class TTIVisualizer extends JButton {
             frame.dispose();
             frame.setUndecorated(false);
 
-            double ratio = 1.631;
+            double ratio = 1.7;
             if (imgToDraw != null) {
-                ratio = (double)imgToDraw.getWidth() / (double)imgToDraw.getHeight();
+                ratio = (double) imgToDraw.getWidth() / (double) imgToDraw.getHeight();
             }
 //            System.out.println("ratio: " + ratio);
             frame.setSize((int) (600 * ratio), 600);
@@ -116,9 +115,10 @@ public class TTIVisualizer extends JButton {
     }
 
     private void drawDebug(Graphics2D g2d) {
+
         g2d.setColor(Color.GRAY);
         String str = "period: " + (period / 1000) + " seconds | screen width: " + getWidth() + " screen height: " + getHeight();
-        str += " - ratio: " + ((double)getWidth() / (double)getHeight());
+        str += " - ratio: " + ((double) getWidth() / (double) getHeight());
         g2d.drawString(str, 10, 30);
     }
 
@@ -155,10 +155,6 @@ public class TTIVisualizer extends JButton {
     }
 
     /// helper function ////////////////////////////////////////////////////////////////////////////////////////////////
-    private boolean isDevelopMode() {
-        return developMode;
-    }
-
     public Set<String> listFilesUsingJavaIO(String dir) {
         return Stream.of(Objects.requireNonNull(new File(dir).listFiles()))
                 .filter(file -> !file.isDirectory())
@@ -184,7 +180,7 @@ public class TTIVisualizer extends JButton {
                 continue;
             }
 
-            if (developMode && imgCount++ > 3) {
+            if (developMode && imgCount++ > 20) {
                 break;
             }
 
@@ -298,11 +294,14 @@ public class TTIVisualizer extends JButton {
                 createTimer();
                 break;
             case KeyEvent.VK_LEFT:
+                imgToDraw = theImages.get(imgToDrawIndex);
+                imgToDrawIndex--;
+                if (imgToDrawIndex < 0) {
+                    imgToDrawIndex = theImages.size() - 1;
+                }
                 break;
             case KeyEvent.VK_RIGHT:
                 imgToDraw = theImages.get(imgToDrawIndex);
-                //nextImgToDraw = theImages.get(imgToDrawIndex + 1);
-                createFader();
                 imgToDrawIndex++;
                 if (imgToDrawIndex > theImages.size() - 1) {
                     imgToDrawIndex = 0;
@@ -331,6 +330,9 @@ public class TTIVisualizer extends JButton {
                 createTimer();
                 break;
             case KeyEvent.VK_M:
+                break;
+            case KeyEvent.VK_V:
+                developMode = !developMode;
                 break;
             case KeyEvent.VK_W:
                 System.exit(0);
