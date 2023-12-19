@@ -23,7 +23,7 @@ public class TTIVisualizer extends JButton {
     private BufferedImage imgToDraw = null;
     private boolean drawHelp = false;
     private int imgCount = 0;
-    private int period = 2000;
+    private int period = 10000;
     private final boolean developMode = true;
     //    private BufferedImage nextImgToDraw;
     private boolean fadingDone = true;
@@ -117,7 +117,7 @@ public class TTIVisualizer extends JButton {
 
     private void drawDebug(Graphics2D g2d) {
         g2d.setColor(Color.GRAY);
-        String str = "period: " + (period / 1000) + "seconds | screen width: " + getWidth() + " screen height: " + getHeight();
+        String str = "period: " + (period / 1000) + " seconds | screen width: " + getWidth() + " screen height: " + getHeight();
         str += " - ratio: " + ((double)getWidth() / (double)getHeight());
         g2d.drawString(str, 10, 30);
     }
@@ -310,7 +310,9 @@ public class TTIVisualizer extends JButton {
                 break;
 
             /// number keys ////////////////////////////////////////////////////////////////////////////////////////////
-            case KeyEvent.VK_4:
+            case KeyEvent.VK_1:
+                period = 1000;
+                createTimer();
                 break;
 
             /// letter keys ////////////////////////////////////////////////////////////////////////////////////////////
