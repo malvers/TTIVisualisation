@@ -69,9 +69,10 @@ public class TTIVisualizer extends JButton {
             /// TODO: calculate ratio good
             double ratio = 1.631;
             if (imgToDraw != null) {
-                ratio = imgToDraw.getHeight() / imgToDraw.getWidth();
+                ratio = (double)imgToDraw.getWidth() / (double)imgToDraw.getHeight();
             }
-            frame.setSize((int) (600 / ratio), 600);
+            System.out.println("ratio: " + ratio);
+            frame.setSize((int) (600 * ratio), 600);
             frame.setLocation(0, 0);
             device.setFullScreenWindow(null);
         }
