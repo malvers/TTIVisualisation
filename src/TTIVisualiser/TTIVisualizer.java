@@ -66,12 +66,11 @@ public class TTIVisualizer extends JButton {
             frame.dispose();
             frame.setUndecorated(false);
 
-            /// TODO: calculate ratio good
             double ratio = 1.631;
             if (imgToDraw != null) {
                 ratio = (double)imgToDraw.getWidth() / (double)imgToDraw.getHeight();
             }
-            System.out.println("ratio: " + ratio);
+//            System.out.println("ratio: " + ratio);
             frame.setSize((int) (600 * ratio), 600);
             frame.setLocation(0, 0);
             device.setFullScreenWindow(null);
@@ -118,7 +117,8 @@ public class TTIVisualizer extends JButton {
 
     private void drawDebug(Graphics2D g2d) {
         g2d.setColor(Color.GRAY);
-        String str = "period [s]: " + (period / 1000) + " screen width: " + getWidth() + " screen height: " + getHeight();
+        String str = "period: " + (period / 1000) + "seconds | screen width: " + getWidth() + " screen height: " + getHeight();
+        str += " - ratio: " + ((double)getWidth() / (double)getHeight());
         g2d.drawString(str, 10, 30);
     }
 
